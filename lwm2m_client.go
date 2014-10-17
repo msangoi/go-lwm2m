@@ -13,7 +13,6 @@ func main() {
 
 	if len(os.Args) != 3 {
 		log.Fatalf("Invalid number of arguments, expected <serverHost> <serverPort>")
-		os.Exit(-1)
 	}
 	serverHost := os.Args[1]
 	serverPort := os.Args[2]
@@ -27,16 +26,12 @@ func main() {
 	laddr, err := net.ResolveUDPAddr("udp", ":5685")
 	if err != nil {
 		log.Fatal(err)
-		os.Exit(-1)
 	}
 
 	c, err := net.ListenUDP("udp", laddr)
 	if err != nil {
 		log.Fatal(err)
-		os.Exit(-1)
 	}
-
-	log.Printf("connection: %v", c)
 
 	// Send register request
 	register := coap.Message{
@@ -52,19 +47,16 @@ func main() {
 	uaddr, err := net.ResolveUDPAddr("udp", serverHost + ":" + serverPort)
 	if err != nil {
 		log.Fatal(err)
-		os.Exit(-1)
 	}
 	err = coap.Transmit(c, uaddr, register)
 	if err != nil {
 		log.Fatalf("Error while sending registration request: %v", err)
-		os.Exit(-1)
 	}
 	buf := make([]byte, 1500)
 	rv, err := coap.Receive(c, buf)
 
 	if err != nil {
 		log.Fatalf("Error while sending registration request: %v", err)
-		os.Exit(-1)
 	}
 
 	if &rv != nil {
